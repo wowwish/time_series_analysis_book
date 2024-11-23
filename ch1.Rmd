@@ -1,0 +1,94 @@
+---
+title: "Time Series Analysis and its Applications"
+output: html_document
+date: "2023-08-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+library(astsa)
+```
+
+## Characteristics of Time Series Data
+
+The obvious correlation introduced by the sampling of adjacent points in time can severely  restrict the applicability of the many conventional statistical methods traditionally  dependent on the assumption that these adjacent observations are independent and  identically distributed.
+The systematic approach by which one goes about answering the mathematical and statistical questions posed by these time correlations is commonly referred to as time series analysis.
+
+It is appropriate to mention that two separate, but not necessarily mutually  exclusive, approaches to time series analysis exist, commonly identified as:
+
+* time domain approach - investigation of lagged relationships (how does what happened today, affect what will happen tomorrow?)
+* frequency domain approach - investigation of cycles (what is the economic cycle through periods of expansion and recession?)
+ 
+
+
+```{r jj_quaterly_earnings}
+plot(jj, type="o", ylab="Quaterly Earnings per Share of Johnson & Johnson")
+```
+
+*Note the gradually increasing underlying trend and the rather  regular variation superimposed on the trend that seems to repeat over quarters*
+
+
+
+```{r global_warming}
+plot(globtemp, type="o", ylab="Global Temperature Deviations")
+```
+
+*Note the levelling off at about 1935 and also the sharp upward trend at about 1970.*
+
+
+
+```{r speech_aaahhh}
+plot(speech)
+```
+
+*This is a 0.1 second (1000 point) sample of recorded speech for the phrase aaa...hhh*
+*One can immediately notice the rather regular repetition of small wavelets. The seperation between the packets is known as the "pitch period" and represents the response of the vocal tract filter to a periodic sequence of pulses stimulated by the opening and closing of the glottis.*
+
+
+
+```{r daily_returns_dow_jones}
+library(xts)
+djiar = diff(log(djia$Close))[-1] # approximate returns
+plot(djiar, type="n", main="DJIA Returns")
+lines(djiar)
+```
+
+
+*Daily returns of the Dow Jones Industrial Average (DJIA) from April 20 2006 to April 20 2016 is plotted here. The mean of the series appears to be stable with an average return of approximately zero. However, highly volatile (variable) periods tend to be clustered together. A problem in the analysis of these type of financial data is to forecast the volatility of future returns.*
+
+**If $x_{t}$ is the actual value of the DJIA and $$r_{t} = \frac{(x_{t} - x_{t-1})}{x_{t-1}}$$ is the return, then $$r_{t} = \frac{x_{t}}{x_{t-1}} - 1$$ Then $$1 + r_{t} = \frac{x_{t}}{x_{t-1}}$$ and $$\log(1 + r_{t}) = \log(x_{t}) - \log(x_{t-1} \sim r_{t})$$**
+
+
+
+```{r el_nino_and_fish_population}
+par(mfrow = c(2, 1), mar=c(2, 2, 2, 2)) # set up graphics
+plot(soi, ylab="", xlab="", main="Southern Oscillation Index")
+plot(rec, ylab="", xlab="", main="Recruitment")   
+```
+
+*We may also be interested in analyzing several time series at once. Here, both series exhibit repetitive behavior, with regularly repeating cycles that are easily visible. This periodic behavior is of interest because the underlying process may also be regular with a rate or frequency or oscillation. The series show two basic oscillation types, an annual cycle (hot in summer and cold in winter) and a slower frequency that repeats every 4 years. The two series are also related which can be further explored through regression analysis.*
+
+
+```{r fmri_img}
+par(mfrow=c(2, 1), mar=c(2,2,2,2))
+ts.plot(fmri1[,2:5], col=1:4, ylab="BOLD", main="Cortex")
+ts.plot(fmri1[,6:9], col=1:4, ylab="BOLD", main="Thalamus and Cerebellum")
+```
+
+ *The plot above is a collection of independent series (or vectors of series) generated under varying experimental conditions or treatment configurations - data collected from various locations in the brain via functional magnetic resonance imaging (fMRI). In this study, 5 subjects were given a periodic brushing stimulus in their hand - stimulus was applied for 32 seconds and then stopped for the next 32 seconds. The sampling frequency was one observation every 2 seconds over a period of 256 seconds (observations = n = 128 per subject or per series vector). These observations are evoked responses in five subjects who were in phase and each series shown is a consecutive measures of blood oxygenation-level dependent (BOLD) signal intensity, which measure the areas of activity in the brain. Notice that the periodicities appear strongly in the motor cortex series and less strongly in the thalamus and cerebellum. One can use Analysis of Variance techniques to test the different independent series to identify how differently, the areas of the brain respond to the brush stimulus.*
+ 
+ 
+```{r earthquake_explosions}
+par(mfrow=c(2, 1), mar=c(2, 2, 2, 2))
+plot(EQ5, main="Earthquake")
+plot(EXP6, main="Explosion")
+```
+ 
+ 
+ *The series in the above plot represent two phases of arrivals along the surface denoted by P(t = 1, ..., 1024) and S(t = 1025, ..., 2048) at a seismic recording station in Scandinavia. The observation collection frequency is 40 points per second. The general problem of interest is in distinguishing or discriminating between waveforms generated by earthquakes and those generated by mining explosions. Features that may be important are the rough amplitude ratio of the first phase P to the second phase S, which tend to be smaller for earthquakes than for explosions. In the case of this example, the ratio of maximum amplitudes appears to be somewhat less than 0.5 for the earthquake and about 1.0 for the mining explosion. Also, note the subtle difference that exists in the periodic nature of the S phase for the earthquake. We can think about spectral analysis of variance for testing the equality of the periodic components of earthquakes and mining explosions. We would also like to be able to classify future P and S components from events of unknown origin which can be achieved using time series discriminant analysis.*
+ 
+ 
+ ## Time Series Statistical Methods    
+ 
+ 
+ The primary objective of Time Series analysis is to develop mathematical models that provide plausible descriptions for sample data. *A time series can be defined as a collection of random variables indexed according to the order that they are obtained in time*. For example, we may consider a time series as a sequence of random variables $x_1, x_2, x_3, ...,$ where the random variable $x_1$ denotes the value taken by the series at the first time point, $x_2$ denotes the values taken by the series at the second time point and so on.
